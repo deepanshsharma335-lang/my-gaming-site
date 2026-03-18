@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Crash Game 🚀</title>
+    <style>
+        body { background-color: #0b0e11; color: white; font-family: 'Arial', sans-serif; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .game-container { background: #181a20; padding: 40px; border-radius: 15px; border: 2px solid #f0b90b; box-shadow: 0 0 20px rgba(240, 185, 11, 0.2); width: 350px; }
+        #multiplier { font-size: 60px; font-weight: bold; color: #f0b90b; margin: 20px 0; transition: transform 0.1s linear; }
+        .status { font-size: 18px; margin-bottom: 20px; min-height: 25px; color: #848e9c; }
+        button { padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+        #betBtn { background-color: #f0b90b; color: black; }
+        #betBtn:disabled { background-color: #474d57; cursor: not-allowed; }
+        #cashBtn { background-color: #2ebd85; color: white; display: none; }
+        .crash-red { color: #f6465d !important; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h2>CRASH GAME 🚀</h2>
+        <div id="multiplier">1.00x</div>
+        <div class="status" id="gameStatus">Click Start to Play</div>
+        
+        <button id="betBtn" onclick="startGame()">START GAME</button>
+        <button id="cashBtn" onclick="cashOut()">CASH OUT</button>
+    </div>
+
+    <script>
+        let multiplier = 1.00;
+        let isRunning = false;
+        let crashPoint = 0;
+        let interval;
+
+        const multDisplay = document.getElementById('multiplier');
+        const statusDisplay = document.getElementById('gameStatus');
+        const betBtn = document.getElementById('betBtn');
+        const cashBtn = document.getElementById('cashBtn');
+
+        function startGame() {
+            // Reset Game
+            multiplier = 1.00;
+            isRunning = true;
+            statusDisplay.innerText = "Game is Running...";
+            statusDisplay.classList.remove('crash-red');
+            multDisplay.classList.remove('crash-red');
+            
+            // Random Crash Point (1.05 to 5.00 for demo)
+            crashPoint = (Math.random() * 4 + 1).toFixed(2);
+            
+            betBtn.style.display = 'none';
+            cashBtn.style.display = 'block';
+
+            interval = setInterval(() => {
+                multiplier += 0.01;
+                multDisplay.innerText = multiplier.toFixed(2) + "x";
+
+                if (multiplier >= crashPoint) {
+                    gameOver();
+                }
+            }, 100); // 100ms speed
+        }
+
+        function cashOut() {
+            if (isRunning) {
+                clearInterval(interval);
+                isRunning = false;
+                statusDisplay.innerText = `You Cashed Out at ${multiplier.toFixed(2)}x! 🎉`;
+                resetUI();
+            }
+        }
+
+        function gameOver() {
+            clearInterval(interval);
+            isRunning = false;
+            statusDisplay.innerText = `CRASHED at ${crashPoint}x! 💥`;
+            statusDisplay.classList.add('crash-red');
+            multDisplay.classList.add('crash-red');
+            resetUI();
+        }
+
+        function resetUI() {
+            betBtn.style.display = 'block';
+            betBtn.innerText = "PLAY AGAIN";
+            cashBtn.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
